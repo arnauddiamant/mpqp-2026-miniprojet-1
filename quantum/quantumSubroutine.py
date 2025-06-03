@@ -1,9 +1,8 @@
 # choose t number of qubits in the phase register
 from mpqp import QCircuit, QBit, ApplyControlledUnitary
-from scipy import log2
 from classic.preprocess import FindCoPrime, PrecomputePowers, FindPhaseRegisterSize, FindModularRegisterSize
 
-def QuantumModularExponentiation(x: int, y: int,a: int, n: int, N: int) -> None:
+def QuantumModularExponentiation(x, y, a: int, n: int, N: int) -> None:
     t = len(x)
     C = PrecomputePowers(a, N, t)
     for i in range(t-1):

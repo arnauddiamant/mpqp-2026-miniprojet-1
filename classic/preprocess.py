@@ -41,6 +41,6 @@ def PrecomputePowers(a: int, N: int, q: int) -> [int]:
     :return: The table with pre-processed values
     """
     table = [a % N]
-    for k in range(1, q):
+    for _ in range(1, q):
         table.append((table[-1] * table[-1]) % N)
     return table

@@ -1,25 +1,27 @@
 # choose t number of qubits in the phase register
-from mpqp import QCircuit, QBit, ApplyControlledUnitary
+from mpqp import QCircuit
+from mpqp.gates import *
 from classic.preprocess import FindCoPrime, PrecomputePowers, FindPhaseRegisterSize, FindModularRegisterSize
 
-def QuantumModularExponentiation(x, y, a: int, n: int, N: int) -> None:
-    t = len(x)
+def QuantumModularExponentiation(Circ, a: int, n: int, N: int) -> None:
+    t = len(Circ)
     C = PrecomputePowers(a, N, t)
-    for i in range(t-1):
-        if x[i] == 1:
-            C = ApplyControlledUnitary(C, i, a, N)
+    for i in range(t + n - 1):
+        if Circ[i] == 1:
+            Circ.add(C[i % t], i + t)
 
-def QuantumSubroutine(N: int) -> None:
+
+def QuantumSubroutine(a: int, N: int) -> QCircuit:
 
     t = FindPhaseRegisterSize(N)
     n = FindModularRegisterSize(N)
-    
     # prepare two register: |0> \tensor t \tensor |0> \tensor n
-    Register1 = QCircuit(t)
-    Register2 = QCircuit(n)
-    
+    Circ = QCircuit(t + n)
+
     # Apply Hadamard on each qubit of register 1
     for i in range(t):
-        Register1.H(QBit(i))
-    
+        Circ.add(H(i))
+
+    QuantumModularExponentiation(Circ, a, n, N)
+
 

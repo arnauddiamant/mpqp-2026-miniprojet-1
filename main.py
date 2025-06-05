@@ -5,8 +5,9 @@ from classic.postprocess import PostProcessPeriod
 
 from quantum.quantumSubroutine import ComputePeriods, QuantumSubroutine
 
-def Shor(N: int) -> tuple[int, int | str]:
-    f1 = None # Answer, loop until find
+def Shor(N: int, maxIterations: int = -1) -> tuple[int, int | str]:
+    maxIterations = N if maxIterations != -1 else N // 2
+    f1 = None # Answer, loop until founded
     tested_a = []
     a = None
     while f1 == None:
@@ -31,8 +32,8 @@ def Shor(N: int) -> tuple[int, int | str]:
                 return f1, f2
         
         # If every a has been tested, end the loop
-        # a is include in [2, N[, which is N-3 elements
-        if len(tested_a) == N - 3:
+        # a is odd and include in [3, N[, which is N-3 elements
+        if len(tested_a) >= maxIterations:
             return None, "Not found"
 
 

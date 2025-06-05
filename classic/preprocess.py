@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 def FindCoPrime(N: int) -> int:
     """
@@ -6,10 +7,12 @@ def FindCoPrime(N: int) -> int:
     :param N: The upper bound of a, and the size of the first qubit register
     :return: The integer a
     """
-    if (N%2 == 0):
+    if (not(N & 1)):
+        # If by error N is even, we know we have a working a
         return 2
     while True:
-        a = np.random.randint(2, N)
+        # We check that a is not even, since it is not a factor of an odd N
+        a = random.randrange(3, N, 2)
         g = np.gcd(a, N)
         if (g != 1):
             return (int) (g)
@@ -32,7 +35,7 @@ def FindModularRegisterSize(N: int) -> int:
     """
     return (int) (np.ceil(np.log2(N)))
 
-def PrecomputePowers(a: int, N: int, q: int) -> list[int]:
+def PrecomputePowers(a: int, N: int, q: int) -> [int]:
     """
     Precomputes the table of [a^(2^q) mod N]
     :param a: Integer prime with N

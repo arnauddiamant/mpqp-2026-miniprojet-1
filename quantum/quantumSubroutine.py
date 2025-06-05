@@ -1,6 +1,7 @@
 # choose t number of qubits in the phase register
 from mpqp import QCircuit
 from mpqp.gates import *
+from mpqp.execution import run, AWSDevice
 from classic.preprocess import FindCoPrime, PrecomputePowers, FindPhaseRegisterSize, FindModularRegisterSize
 
 def QuantumModularExponentiation(Circ, a: int, n: int, N: int) -> None:
@@ -25,3 +26,16 @@ def QuantumSubroutine(a: int, N: int) -> QCircuit:
     QuantumModularExponentiation(Circ, a, n, N)
 
 
+
+"""
+This function takes a quantum circuit (generated from QuantumSubroutine),
+emulates it and return the result (most probable period r).
+"""
+def ComputePeriod(circ: QCircuit) -> int:
+    result = run(circ, AWSDevice.BRAKET_LOCAL_SIMULATOR)
+
+    r = 0
+    for i in range(1, len(result.counts)):
+        r = i if result.counts[i] > result.counts[r] else r
+    
+    return r

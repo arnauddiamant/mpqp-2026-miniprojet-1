@@ -3,10 +3,10 @@ from mpqp.gates import *
 
 
 """
-This function add a QFT at the end of the circuit
+This function add a QFT at the end of the circuit on the Nth first qubits (default: all qubits)
 """
-def AddQFTToCircuit(circ: QCircuit) -> None:
-    nbQubits : int = circ.nb_qubits
+def AddQFTToCircuit(circ: QCircuit, N: int = None) -> None:
+    nbQubits : int = N if N != None else circ.nb_qubits
     
     for i in range(nbQubits):
         circ.add(H(i))

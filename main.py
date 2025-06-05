@@ -4,14 +4,16 @@ from mpqp.measures import BasisMeasure
 from mpqp.execution import run, AWSDevice
 
 from quantum.qft import AddQFTToCircuit
+from quantum.quantumSubroutine import ComputePeriod
 
 def basicCircuit():
-    circ = QCircuit(3)
+    circ = QCircuit(5)
 
-    AddQFTToCircuit(circ)
-
+    AddQFTToCircuit(circ, 3)
     circ.pretty_print()
-    #print(run(circ, [AWSDevice.BRAKET_LOCAL_SIMULATOR]))
+
+    circ.add(BasisMeasure(shots=100))
+    print(f"Period is {ComputePeriod(circ)}")
 
 if __name__ == "__main__":
     basicCircuit()

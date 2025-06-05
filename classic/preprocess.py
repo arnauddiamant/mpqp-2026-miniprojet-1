@@ -12,9 +12,9 @@ def FindCoPrime(N: int) -> int:
         a = np.random.randint(2, N)
         g = np.gcd(a, N)
         if (g != 1):
-            return g
+            return (int) (g)
         else:
-            return a
+            return (int) (a)
 
 def FindPhaseRegisterSize(N: int) -> int:
     """
@@ -22,7 +22,7 @@ def FindPhaseRegisterSize(N: int) -> int:
     :param N: Size of the first register
     :return: Size of the phase register
     """
-    return np.ceil(2 * np.log2(N))
+    return (int) (np.ceil(2 * np.log2(N)))
 
 def FindModularRegisterSize(N: int) -> int:
     """
@@ -30,7 +30,7 @@ def FindModularRegisterSize(N: int) -> int:
     :param N: Size of the first register
     :return: Size of the modular register
     """
-    return np.ceil(np.log2(N))
+    return (int) (np.ceil(np.log2(N)))
 
 def PrecomputePowers(a: int, N: int, q: int) -> [int]:
     """

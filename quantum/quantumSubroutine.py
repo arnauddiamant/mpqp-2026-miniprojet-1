@@ -9,26 +9,29 @@ from mpqp.measures import BasisMeasure
 from classic.preprocess import PrecomputePowers, FindPhaseRegisterSize, FindModularRegisterSize
 from quantum.qft import AddQFTToCircuit
 
-def QuantumModularExponentiation(Circ, a: int, n: int, N: int) -> None:
-    t = len(Circ)
-    C = PrecomputePowers(a, N, t)
-    for i in range(t + n - 1):
-        if Circ[i] == 1:
-            Circ.add(C[i % t], i + t)
+def QuantumModularExponentiation(circ: QCircuit, N: int, a: int,  t: int, n: int) -> None:
+    for i in range(t):
+        for j in range(n):
+            circ.add(CNOT(i, t+j))
 
 
 def QuantumSubroutine(N: int, a: int) -> QCircuit:
     t = FindPhaseRegisterSize(N)
     n = FindModularRegisterSize(N)
+    print(t, n
+          )
     # prepare two register: |0> \tensor t \tensor |0> \tensor n
     circ = QCircuit(t + n)
 
     # Apply Hadamard on each qubit of register 1
     for i in range(t):
         circ.add(H(i))
+    
+    # Set to |1> every ancilla qubits
+    for i in range(n):
+        circ.add(X(t + i))
 
-    # TODO: Do the circuit
-    #QuantumModularExponentiation(circ, a, n, N)
+    QuantumModularExponentiation(circ, N, a, t, n)
 
     AddQFTToCircuit(circ, t)
 

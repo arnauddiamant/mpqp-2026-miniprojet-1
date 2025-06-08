@@ -38,4 +38,6 @@ def Shor(N: int, maxIterations: int = -1) -> tuple[int, int | str]:
 
 
 if __name__ == "__main__":
-    print(Shor(15))
+    # print(Shor(15))
+    circ = QuantumSubroutine(4, 3)
+    circ.pretty_print()

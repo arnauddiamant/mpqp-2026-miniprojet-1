@@ -35,7 +35,7 @@ def FindModularRegisterSize(N: int) -> int:
     """
     return (int) (np.ceil(np.log2(N)))
 
-def PrecomputePowers(a: int, N: int, q: int) -> [int]:
+def PrecomputePowers(a: int, N: int, q: int) -> list[int]:
     """
     Precomputes the table of [a^(2^q) mod N]
     :param a: Integer prime with N

@@ -1,43 +1,57 @@
 # choose t number of qubits in the phase register
+import numpy as np
+
 from mpqp import QCircuit
 from mpqp.gates import *
-from mpqp.measure import BasisMeasure
-from classic.preprocess import FindCoPrime, PrecomputePowers, FindPhaseRegisterSize, FindModularRegisterSize
+from mpqp.execution import run, AWSDevice
+from mpqp.measures import BasisMeasure
 
-def QuantumModularExponentiation(Circ, a: int, n: int, N: int) -> None:
-    t = len(Circ)
-    C = PrecomputePowers(a, N, t)
-    for i in range(t + n - 1):
-        if Circ[i] == 1:
-            Circ.add(C[i % t], i + t)
+from classic.preprocess import PrecomputePowers, FindPhaseRegisterSize, FindModularRegisterSize
+from quantum.qft import AddQFTToCircuit
 
-def InverseQFT(Circ, start: int, end: int) -> None:
-    for i in range(end - 1, start - 1, -1):
-        Circ.add(H(i))
-        for j in range(i - 1, start - 1, -1):
-            Circ.add(CRk(-2 ** (i - j), j, i))
-
-    for i in range((end - start) // 2):
-        Circ.add(SWAP(start + i, end - i - 1))
+def QuantumModularExponentiation(circ: QCircuit, N: int, a: int,  t: int, n: int) -> None:
+    for i in range(t):
+        for j in range(n):
+            circ.add(CNOT(i, t+j))
 
 
-def QuantumSubroutine(a: int, N: int) -> QCircuit:
-
+def QuantumSubroutine(N: int, a: int) -> QCircuit:
     t = FindPhaseRegisterSize(N)
     n = FindModularRegisterSize(N)
+    print(t, n
+          )
     # prepare two register: |0> \tensor t \tensor |0> \tensor n
-    Circ = QCircuit(t + n)
+    circ = QCircuit(t + n)
 
     # Apply Hadamard on each qubit of register 1
     for i in range(t):
-        Circ.add(H(i))
+        circ.add(H(i))
+    
+    # Set to |1> every ancilla qubits
+    for i in range(n):
+        circ.add(X(t + i))
 
-    QuantumModularExponentiation(Circ, a, n, N)
+    QuantumModularExponentiation(circ, N, a, t, n)
 
-        # Apply inverse QFT to phase register
-    InverseQFT(Circ, 0, t)
+    AddQFTToCircuit(circ, t)
 
-    # Measure the phase register
-    Circ.add(BasisMeasure(targets=list(range(t)), shots=1024))
+    circ.add(BasisMeasure(list(range(t)), shots=100))
+    return circ
 
-    return Circ
+
+
+"""
+This function takes a quantum circuit (generated from QuantumSubroutine),
+emulates it and return the result (most probable periods (above a threshold)).
+"""
+def ComputePeriods(circ: QCircuit) -> int:
+    result = run(circ, AWSDevice.BRAKET_LOCAL_SIMULATOR)
+
+    # Getting only non-0 results
+    results = [(i, result.probabilities[i]) for i in range(len(result.probabilities)) if result.probabilities[i] != 0]
+
+    # Compute threshold
+    threshold = np.percentile([results[i][1] for i in range(len(results))], 90)
+
+    # Return only 10% of most probable answers
+    return [results[i][0] for i in range(len(results)) if results[i][1] >= threshold]

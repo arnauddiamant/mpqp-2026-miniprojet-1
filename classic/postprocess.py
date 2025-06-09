@@ -21,5 +21,15 @@ def PostProcessPeriod(N : int, a : int, r : int) -> tuple[int, int | str]:
     # Compute a^(r/2) ± 1 mod N
     factor1 = np.gcd(x - 1, N)
     factor2 = np.gcd(x + 1, N)
+
+    # Avoid getting 1 or N
+    if factor1 == 1 or factor1 == N:
+        if factor2 == 1 or factor2 == N:
+            return None, "Period gives 1 or N only"
+        return factor2, N // factor2
     
+    if factor2 == 1 or factor2 == N:
+        return factor1, N // factor1
+    
+    # Both factors are different from 1 and N
     return factor1, factor2

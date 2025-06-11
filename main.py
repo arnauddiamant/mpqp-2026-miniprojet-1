@@ -1,4 +1,5 @@
 from mpqp import QCircuit
+from mpqp.gates import *
 
 from classic.preprocess import FindCoPrime
 from classic.postprocess import PostProcessPeriod
@@ -38,6 +39,4 @@ def Shor(N: int, maxIterations: int = -1) -> tuple[int, int | str]:
 
 
 if __name__ == "__main__":
-    # print(Shor(15))
-    circ = QuantumSubroutine(4, 3)
-    circ.pretty_print()
+    print(Shor(15))

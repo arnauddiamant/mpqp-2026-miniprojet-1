@@ -3,23 +3,27 @@ import numpy as np
 
 from mpqp import QCircuit
 from mpqp.gates import *
-from mpqp.execution import run, AWSDevice
+from mpqp.execution import run, IBMDevice
 from mpqp.measures import BasisMeasure
+from quantum.CustomControlledGate import *
 
 from classic.preprocess import PrecomputePowers, FindPhaseRegisterSize, FindModularRegisterSize
 from quantum.qft import AddQFTToCircuit
 
 def QuantumModularExponentiation(circ: QCircuit, N: int, a: int,  t: int, n: int) -> None:
     for i in range(t):
+        # Uk =
+        # 1     0
+        # 0 e^(2πi*a/N)^k
+        # avec k = 2^i
+        mat = np.array([[1, 0], [0, np.exp(2*np.pi*1j*a*(1 << i)/N)]], dtype=complex)
         for j in range(n):
-            circ.add(CNOT(i, t+j))
+            circ.add(CustomControlledGate([i], CustomGate(UnitaryMatrix(mat), [j+t])))
 
 
 def QuantumSubroutine(N: int, a: int) -> QCircuit:
     t = FindPhaseRegisterSize(N)
     n = FindModularRegisterSize(N)
-    print(t, n
-          )
     # prepare two register: |0> \tensor t \tensor |0> \tensor n
     circ = QCircuit(t + n)
 
@@ -45,7 +49,9 @@ This function takes a quantum circuit (generated from QuantumSubroutine),
 emulates it and return the result (most probable periods (above a threshold)).
 """
 def ComputePeriods(circ: QCircuit) -> int:
-    result = run(circ, AWSDevice.BRAKET_LOCAL_SIMULATOR)
+    # circ.pretty_print()
+    print(repr(circ))
+    result = run(circ, IBMDevice.AER_SIMULATOR)
 
     # Getting only non-0 results
     results = [(i, result.probabilities[i]) for i in range(len(result.probabilities)) if result.probabilities[i] != 0]

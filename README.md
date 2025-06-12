@@ -5,8 +5,8 @@
 - SEFRIN Quentin
 
 # Dependencies:
-- Python3.12
-- [MPQP](https://mpqpdoc.colibri-quantum.com/getting-started) python library
+- Python3.10
+- [MPQP](https://mpqpdoc.colibri-quantum.com/getting-started) python library - **version 0.2.2**
 
 # Subject: Implement Shor's algorithm with MPQP
 **Difficulty:** 4.5/5

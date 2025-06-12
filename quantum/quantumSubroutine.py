@@ -7,7 +7,7 @@ from mpqp.execution import run, IBMDevice
 from mpqp.measures import BasisMeasure
 from quantum.CustomControlledGate import *
 
-from classic.preprocess import PrecomputePowers, FindPhaseRegisterSize, FindModularRegisterSize
+from classic.preprocess import FindPhaseRegisterSize, FindModularRegisterSize
 from quantum.qft import AddQFTToCircuit
 
 def QuantumModularExponentiation(circ: QCircuit, N: int, a: int,  t: int, n: int) -> None:
@@ -21,9 +21,13 @@ def QuantumModularExponentiation(circ: QCircuit, N: int, a: int,  t: int, n: int
             circ.add(CustomControlledGate([i], CustomGate(UnitaryMatrix(mat), [j+t])))
 
 
-def QuantumSubroutine(N: int, a: int) -> QCircuit:
+def QuantumSubroutine(N: int, a: int, DEBUG_MODE: bool = False) -> QCircuit:
     t = FindPhaseRegisterSize(N)
     n = FindModularRegisterSize(N)
+
+    if DEBUG_MODE:
+        print(f"Creating circuit with {t+n} qubits ({t} + {n} ancillas)")
+
     # prepare two register: |0> \tensor t \tensor |0> \tensor n
     circ = QCircuit(t + n)
 
@@ -48,12 +52,16 @@ def QuantumSubroutine(N: int, a: int) -> QCircuit:
 This function takes a quantum circuit (generated from QuantumSubroutine),
 emulates it and return the result (most probable periods (above a threshold)).
 """
-def ComputePeriods(circ: QCircuit) -> int:
+def ComputePeriods(circ: QCircuit, DEBUG_MODE: bool = False) -> int:
+    if DEBUG_MODE:
+        print(f"Emulating circuit.")
     # print(repr(circ))
     result = run(circ, IBMDevice.AER_SIMULATOR)
 
     # Getting only non-0 results
     results = [(i, result.probabilities[i]) for i in range(len(result.probabilities)) if result.probabilities[i] != 0]
+    if DEBUG_MODE:
+        print(f"Simulation results non-zero: {results}")
 
     # Compute threshold
     threshold = np.percentile([results[i][1] for i in range(len(results))], 90)

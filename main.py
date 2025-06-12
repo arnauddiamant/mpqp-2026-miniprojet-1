@@ -6,7 +6,7 @@ from classic.postprocess import PostProcessPeriod
 
 from quantum.quantumSubroutine import ComputePeriods, QuantumSubroutine
 
-def Shor(N: int, maxIterations: int = -1) -> tuple[int, int | str]:
+def Shor(N: int, maxIterations: int = -1, display_circ: bool = False) -> tuple[int, int | str]:
     maxIterations = N if maxIterations != -1 else N // 2
     f1 = None # Answer, loop until founded
     tested_a = []
@@ -20,6 +20,8 @@ def Shor(N: int, maxIterations: int = -1) -> tuple[int, int | str]:
 
         # Create the circuit
         circ = QuantumSubroutine(N, a)
+        if display_circ:
+            circ.pretty_print()
 
         # Compute periods
         periods = ComputePeriods(circ)
@@ -39,4 +41,4 @@ def Shor(N: int, maxIterations: int = -1) -> tuple[int, int | str]:
 
 
 if __name__ == "__main__":
-    print(Shor(15))
+    print(Shor(35))

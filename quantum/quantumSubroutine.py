@@ -49,7 +49,6 @@ This function takes a quantum circuit (generated from QuantumSubroutine),
 emulates it and return the result (most probable periods (above a threshold)).
 """
 def ComputePeriods(circ: QCircuit) -> int:
-    circ.pretty_print()
     # print(repr(circ))
     result = run(circ, IBMDevice.AER_SIMULATOR)
 

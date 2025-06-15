@@ -7,7 +7,7 @@ from mpqp.execution import run, IBMDevice
 from mpqp.measures import BasisMeasure
 from quantum.CustomControlledGate import *
 
-from classic.preprocess import FindPhaseRegisterSize, FindModularRegisterSize
+from classic.preprocess import BitSize
 from quantum.qft import AddQFTToCircuit
 
 def QuantumModularExponentiation(circ: QCircuit, N: int, a: int,  t: int, n: int) -> None:
@@ -22,8 +22,7 @@ def QuantumModularExponentiation(circ: QCircuit, N: int, a: int,  t: int, n: int
 
 
 def QuantumSubroutine(N: int, a: int, DEBUG_MODE: bool = False) -> QCircuit:
-    t = FindPhaseRegisterSize(N)
-    n = FindModularRegisterSize(N)
+    t = n = BitSize(N)
 
     if DEBUG_MODE:
         print(f"Creating circuit with {t+n} qubits ({t} + {n} ancillas)")

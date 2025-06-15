@@ -19,21 +19,13 @@ def FindCoPrime(N: int) -> int:
         else:
             return (int) (a)
 
-def FindPhaseRegisterSize(N: int) -> int:
+def BitSize(n: int) -> int:
     """
-    Find the size of the phase register
-    :param N: Size of the first register
-    :return: Size of the phase register
+    Find the number of qubits needed to represent an integer
+    :param n: Integer we are trying to represent
+    :return: Number of qubits needed to represent n
     """
-    return (int) (np.ceil(2 * np.log2(N)))
-
-def FindModularRegisterSize(N: int) -> int:
-    """
-    Find the size of the modular register
-    :param N: Size of the first register
-    :return: Size of the modular register
-    """
-    return (int) (np.ceil(np.log2(N)))
+    return (int) (np.ceil(np.log2(n)))
 
 def PrecomputePowers(a: int, N: int, q: int) -> list[int]:
     """

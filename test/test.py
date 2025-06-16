@@ -1,5 +1,8 @@
 import argparse
 
+import numpy as np
+import random
+
 import time
 import sys
 import os
@@ -83,6 +86,9 @@ if __name__ == "__main__":
         113, # No answer
     ]
 
+    # Limit for the number of random cases
+    max_random_cases = 13
+
     # Parsing arguments for selecting tests
     # Create a parser object
     parser = argparse.ArgumentParser()
@@ -92,6 +98,8 @@ if __name__ == "__main__":
     parser.add_argument('-a', '--all', action='store_true', help="Launch every tests")
     parser.add_argument('-b', '--basic', action='store_true', help="Launch test for basic cases")
     parser.add_argument('-p', '--primes', action='store_true', help="Launch test for prime cases")
+    parser.add_argument('-r', '--random', nargs='?', const=1, type=RestrictedInt(1, max_random_cases), metavar='CASES',
+                        help=f"Launch test for random cases (up to {max_random_cases})")
     parser.add_argument('-H', '--hard', nargs='?', const=3, type=RestrictedInt(1, len(hard_cases)), metavar='CASES',
                         help=f"Launch test for hard cases (up to several minutes). Optionally specify number of cases (1 to {len(hard_cases)})")
 
@@ -114,5 +122,14 @@ if __name__ == "__main__":
 
         if args.hard is not None:
             TestShorBasic(test_cases=hard_cases, TIMER=TIMER, cases=args.hard)
+
+    if args.random is not None:
+        for _ in range(args.random):
+            a = random.randrange(3, 100, 2)
+            b = random.randrange(3, 100, 2)
+            while np.gcd(a, b) != 1:
+                b = random.randrange(3, 100, 2)
+            print(f"\n\nSelected {a} and {b} at random, launching Shor for {a} * {b} = {a * b}")
+            TestShorBasic(test_cases=[a * b], TIMER=TIMER)
 
     print("\nAll tests passed.")

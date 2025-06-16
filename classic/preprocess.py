@@ -1,6 +1,7 @@
 import numpy as np
 import random
 
+
 def FindCoPrime(N: int) -> int:
     """
     We search a random a, such that 1 < a < N and GCD(a, N) = 1
@@ -19,13 +20,15 @@ def FindCoPrime(N: int) -> int:
         else:
             return (int) (a)
 
-def BitSize(n: int) -> int:
+
+def BitSize(N: int) -> int:
     """
     Find the number of qubits needed to represent an integer
-    :param n: Integer we are trying to represent
-    :return: Number of qubits needed to represent n
+    :param N: Integer we are trying to represent
+    :return: Number of qubits needed to represent N
     """
-    return (int) (np.ceil(np.log2(n)))
+    return (int) (np.ceil(np.log2(N)))
+
 
 def PrecomputePowers(a: int, N: int, q: int) -> list[int]:
     """

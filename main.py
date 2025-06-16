@@ -5,9 +5,10 @@ from classic.postprocess import PostProcessPeriod
 
 from quantum.quantumSubroutine import ComputePeriods, QuantumSubroutine
 
-def Shor(N: int, maxIterations: int = -1, display_circ: bool = False, DEBUG_MODE: bool = False) -> tuple[int, int | str]:
+
+def Shor(N: int, maxIterations: int = -1, CIRCUIT_MODE: bool = False, DEBUG_MODE: bool = False) -> tuple[int, int | str]:
     maxIterations = maxIterations if maxIterations != -1 else N // 2 - 1
-    f1 = None # Answer, loop until founded
+    f1 = None # Answer, loop until found
     tested_a = []
     a = None
     if DEBUG_MODE:
@@ -23,14 +24,14 @@ def Shor(N: int, maxIterations: int = -1, display_circ: bool = False, DEBUG_MODE
 
         # Create the circuit
         circ = QuantumSubroutine(N, a, DEBUG_MODE=DEBUG_MODE)
-        if display_circ:
+        if CIRCUIT_MODE:
             circ.pretty_print()
 
         # Compute periods
         periods = ComputePeriods(circ)
 
         if DEBUG_MODE:
-            print(f"Potential periods founded: {periods}")
+            print(f"Potential periods found: {periods}")
 
         # Test all periods
         for r in periods:
@@ -40,7 +41,7 @@ def Shor(N: int, maxIterations: int = -1, display_circ: bool = False, DEBUG_MODE
             # Compute primes
             f1, f2 = PostProcessPeriod(N, a, r, DEBUG_MODE=DEBUG_MODE)
             
-            if f1 != None: # Primes are founded
+            if f1 != None: # Primes are found
                 return f1, f2
         
         # If every a has been tested, end the loop
@@ -85,7 +86,7 @@ if __name__ == "__main__":
         print("N is odd. Computing solution.")
 
     # Use the shor's algorithm to factorize N
-    f1, f2 = Shor(N, display_circ=args.circuit, DEBUG_MODE=DEBUG_MODE)
+    f1, f2 = Shor(N, CIRCUIT_MODE=args.circuit, DEBUG_MODE=DEBUG_MODE)
     if f1 == None:
         print("\n\033[91mNo factorization founded.\033[0m")
     else:

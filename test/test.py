@@ -29,7 +29,7 @@ def TestShorBasic(test_cases: list[int], TIMER: bool = False, cases: int = 0):
         print(f"\nTesting N = {N}")
 
         start_time = time.time()
-        f1, f2 = Shor(N, DEBUG_MODE=False)
+        f1, f2 = Shor(N, DEBUG_MODE=True)
         elapsed = time.time() - start_time
 
         print(f"Found factors: {f1}, {f2}")
@@ -43,7 +43,7 @@ def TestShorPrime(test_cases: list[int], TIMER: bool = False):
         print(f"\nTesting N = {N}")
 
         start_time = time.time()
-        f1, f2 = Shor(N, DEBUG_MODE=False)
+        f1, f2 = Shor(N, DEBUG_MODE=True)
         elapsed = time.time() - start_time
 
         print(f"Found factors: {f1}, {f2}")
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     ]
 
     hard_cases = [
-        6693, # 97 * 69
+        6887, # 97 * 71
         16837, # 113 * 149
         18536, # 118 * 157
     ]

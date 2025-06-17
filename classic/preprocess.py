@@ -13,7 +13,7 @@ def FindCoPrime(N: int) -> int:
         return 2
     while True:
         # We check that a is not even, since it is not a factor of an odd N
-        a = random.randrange(3, np.ceil(N / 2), 2)
+        a = random.randrange(3, N, 2)
         g = np.gcd(a, N)
         if (g != 1):
             return (int) (g)
